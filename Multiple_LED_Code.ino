@@ -22,6 +22,9 @@ void setup() {
   //start communication with bluetooth module
   bluetoothSerial.begin(9600);
 
+  //start serial communication with Computer
+  Serial.begin(9600);
+
   //set all pins to off as default to start with
   digitalWrite(led1, LOW);
   digitalWrite(led2, LOW);
@@ -40,7 +43,7 @@ void loop() {
     inputString = bluetoothSerial.readString();;        //make a string of the characters coming in serial
 
   }
-  
+
   if (inputString.endsWith("/#")) { //if it ends with "/#" it is the end of the command
     inputString = inputString.substring(0, inputString.length() - 2); //get rid of the "/#" at the end
 
@@ -48,7 +51,6 @@ void loop() {
       if (inputString.charAt(i) == ',') {
         buttonId = inputString.substring(0, i); //get the id of the button
         buttonState = inputString.substring(i + 1).toInt(); //get the state of the button ,if its 0 switch it off and if its 1 turn it on
-
       }
     }
 
@@ -57,6 +59,24 @@ void loop() {
   }
   pinNum =  buttonId.substring(1).toInt();  //get pin number and then convert the string toan int
   digitalWrite( pinNum, buttonState);
+
+  //print on Serial monitor
+  Serial.print("Setting LED number : ");
+  Serial.print(pinNum);
+  Serial.print(" to ");
+  Serial.print(buttonState);
+  Serial.print(" .");
+  Serial.println();
+  Serial.println();
+
+  //print on App
+  bluetoothSerial.print("Setting LED number : ");
+  bluetoothSerial.print(pinNum);
+  bluetoothSerial.print(" to ");
+  bluetoothSerial.print(buttonState);
+  bluetoothSerial.print(" .");
+  bluetoothSerial.println();
+  bluetoothSerial.println();
 }
 
 
